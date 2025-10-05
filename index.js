@@ -68,7 +68,7 @@ export class Kpathsea {
      * @returns {Promise<string>} A promise that resolves with the full, absolute path to the file.
      * @throws {Error} Throws an error if `kpsewhich` fails or the file is not found.
      */
-    async findFile(fileName, format = FILE_FORMAT.ALL) {
+    async findFileAsync(fileName, format = FILE_FORMAT.ALL) {
         if (!fileName) {
             throw new Error("fileName must be provided.");
         }
@@ -97,7 +97,7 @@ export class Kpathsea {
         }
     }
 
-    findFileSync(fileName, format = FILE_FORMAT.ALL) {
+    findFile(fileName, format = FILE_FORMAT.ALL) {
         if (!fileName) {
             throw new Error("fileName must be provided.");
         }
