@@ -111,7 +111,10 @@ export class Kpathsea {
         args.push(fileName)
 
         try {
-            const { stdout } = execFileSync(this.kpsewhichPath, args)
+            const stdout = execFileSync(this.kpsewhichPath, args, {
+                // Use utf8 encoding for stdio pipes
+                encoding: 'utf8',
+            })
             const resultPath = stdout.trim()
 
             // kpsewhich can return an empty string and a success exit code if nothing is found.

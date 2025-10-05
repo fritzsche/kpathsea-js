@@ -8,7 +8,7 @@
     ".": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified. Please ensure you have a TeX distribution installed for manual testing.\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": [
     "kpathsea",
