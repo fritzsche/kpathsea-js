@@ -1,0 +1,23 @@
+{
+  "name": "kpathsea-js",
+  "version": "1.0.0",
+  "description": "A pure Node.js wrapper for the kpsewhich command-line tool to find TeX files.",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified. Please ensure you have a TeX distribution installed for manual testing.\" && exit 1"
+  },
+  "keywords": [
+    "kpathsea",
+    "kpsewhich",
+    "tex",
+    "latex",
+    "texmf",
+    "fonts"
+  ],
+  "author": "Thomas",
+  "license": "MIT"
+}
