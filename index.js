@@ -96,4 +96,36 @@ export class Kpathsea {
             throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`);
         }
     }
+
+    findFileSync(fileName, format = FILE_FORMAT.ALL) {
+        if (!fileName) {
+            throw new Error("fileName must be provided.");
+        }
+
+        const args = [];
+        // Only add the --format flag if a specific format is requested.
+        if (format !== FILE_FORMAT.ALL) {
+            args.push(`--format=${format}`);
+        }
+        args.push(fileName);
+
+        try {
+            const { stdout } = execFile(this.kpsewhichPath, args);
+            const resultPath = stdout.trim();
+            
+            // kpsewhich can return an empty string and a success exit code if nothing is found.
+            if (!resultPath) {
+                 throw new Error(`File '${fileName}' not found for format '${format}'.`);
+            }
+            return resultPath;
+        } catch (error) {
+            // kpsewhich returns a non-zero exit code if the file is not found, which execFileAsync catches.
+            // We create a more informative error message.
+            const stderr = error.stderr || '';
+            throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`);
+        }
+    }
+
+
+
 }
