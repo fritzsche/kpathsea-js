@@ -1,10 +1,11 @@
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
-import fs from 'fs';
+import { execFile } from 'child_process'
+import { execFileSync } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
+import fs from 'fs'
 
 // Promisify the execFile function for async/await usage
-const execFileAsync = promisify(execFile);
+const execFileAsync = promisify(execFile)
 
 /**
  * An enumeration of common file formats recognized by kpsewhich.
@@ -18,7 +19,7 @@ export const FILE_FORMAT = {
     TYPE1: "type1 fonts",
     TRUETYPE: "truetype fonts",
     OPENTYPE: "opentype fonts",
-    
+
     // TeX source and style formats
     TEX: "tex",
     BIB: "bib",
@@ -32,8 +33,8 @@ export const FILE_FORMAT = {
     ENC: "enc",
 
     // A special value to let kpsewhich search all known formats. This is the default.
-    ALL: "all" 
-};
+    ALL: "all"
+}
 
 /**
  * A class to interact with the kpsewhich command-line tool.
@@ -46,17 +47,17 @@ export class Kpathsea {
      * If not provided, it assumes `kpsewhich` is in the system's PATH.
      */
     constructor(texPath) {
-        this.kpsewhichPath = 'kpsewhich';
+        this.kpsewhichPath = 'kpsewhich'
         if (texPath) {
-            const kpsewhichWithExt = process.platform === 'win32' ? 'kpsewhich.exe' : 'kpsewhich';
-            const potentialPath = path.join(texPath, kpsewhichWithExt);
+            const kpsewhichWithExt = process.platform === 'win32' ? 'kpsewhich.exe' : 'kpsewhich'
+            const potentialPath = path.join(texPath, kpsewhichWithExt)
             try {
                 // Check if the file exists at the specified path.
-                fs.accessSync(potentialPath, fs.constants.F_OK);
-                this.kpsewhichPath = potentialPath;
+                fs.accessSync(potentialPath, fs.constants.F_OK)
+                this.kpsewhichPath = potentialPath
             } catch (e) {
                 // If it doesn't exist, warn the user and fall back to the system PATH.
-                console.warn(`[kpathsea-js] Warning: 'kpsewhich' not found at ${potentialPath}. Falling back to system PATH.`);
+                console.warn(`[kpathsea-js] Warning: 'kpsewhich' not found at ${potentialPath}. Falling back to system PATH.`)
             }
         }
     }
@@ -70,59 +71,59 @@ export class Kpathsea {
      */
     async findFileAsync(fileName, format = FILE_FORMAT.ALL) {
         if (!fileName) {
-            throw new Error("fileName must be provided.");
+            throw new Error("fileName must be provided.")
         }
 
-        const args = [];
+        const args = []
         // Only add the --format flag if a specific format is requested.
         if (format !== FILE_FORMAT.ALL) {
-            args.push(`--format=${format}`);
+            args.push(`--format=${format}`)
         }
-        args.push(fileName);
+        args.push(fileName)
 
         try {
-            const { stdout } = await execFileAsync(this.kpsewhichPath, args);
-            const resultPath = stdout.trim();
-            
+            const { stdout } = await execFileAsync(this.kpsewhichPath, args)
+            const resultPath = stdout.trim()
+
             // kpsewhich can return an empty string and a success exit code if nothing is found.
             if (!resultPath) {
-                 throw new Error(`File '${fileName}' not found for format '${format}'.`);
+                throw new Error(`File '${fileName}' not found for format '${format}'.`)
             }
-            return resultPath;
+            return resultPath
         } catch (error) {
             // kpsewhich returns a non-zero exit code if the file is not found, which execFileAsync catches.
             // We create a more informative error message.
-            const stderr = error.stderr || '';
-            throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`);
+            const stderr = error.stderr || ''
+            throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`)
         }
     }
 
     findFile(fileName, format = FILE_FORMAT.ALL) {
         if (!fileName) {
-            throw new Error("fileName must be provided.");
+            throw new Error("fileName must be provided.")
         }
 
-        const args = [];
+        const args = []
         // Only add the --format flag if a specific format is requested.
         if (format !== FILE_FORMAT.ALL) {
-            args.push(`--format=${format}`);
+            args.push(`--format=${format}`)
         }
-        args.push(fileName);
+        args.push(fileName)
 
         try {
-            const { stdout } = execFile(this.kpsewhichPath, args);
-            const resultPath = stdout.trim();
-            
+            const { stdout } = execFileSync(this.kpsewhichPath, args)
+            const resultPath = stdout.trim()
+
             // kpsewhich can return an empty string and a success exit code if nothing is found.
             if (!resultPath) {
-                 throw new Error(`File '${fileName}' not found for format '${format}'.`);
+                throw new Error(`File '${fileName}' not found for format '${format}'.`)
             }
-            return resultPath;
+            return resultPath
         } catch (error) {
             // kpsewhich returns a non-zero exit code if the file is not found, which execFileAsync catches.
             // We create a more informative error message.
-            const stderr = error.stderr || '';
-            throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`);
+            const stderr = error.stderr || ''
+            throw new Error(`[kpathsea-js] Error finding '${fileName}': ${stderr.trim() || error.message}`)
         }
     }
 
